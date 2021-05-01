@@ -18,15 +18,17 @@ vereinfachung (Konkatenation a Phi) = "Phi"
 vereinfachung (Konkatenation Phi a) = "Phi"
 vereinfachung (Konkatenation a Epsilon) = vereinfachung a
 vereinfachung (Konkatenation Epsilon a) = vereinfachung a
-vereinfachung (Konkatenation a b) = (vereinfachung a) ++ " + " ++ (vereinfachung b)
-vereinfachung (Alternative a b) = if vereinfachung(a) == vereinfachung(b) then vereinfachung a else (vereinfachung a) ++ " | " ++ (vereinfachung b) 
+vereinfachung (Konkatenation a b) = (vereinfachung a) ++ " " ++ (vereinfachung b)
+vereinfachung (Alternative a Phi) = vereinfachung a
+vereinfachung (Alternative Phi a) = vereinfachung a
+vereinfachung (Alternative a b) = if vereinfachung(a) == vereinfachung(b) then vereinfachung a else (vereinfachung a) ++ " + " ++ (vereinfachung b) 
 vereinfachung (Sternbildung Phi) = "Eps"
 vereinfachung (Sternbildung Epsilon) = "Eps"
 vereinfachung (Sternbildung (Sternbildung a)) = vereinfachung (Sternbildung a)
 vereinfachung (Sternbildung a) = (vereinfachung a) ++ "*"
 
 --Beispiel aus Folie eps ((a*)* (phi + b))
---let x = Konkatenation Epsilon (Konkatenation (Sternbildung (Sternbildung (C "a"))) (Konkatenation Phi (C "b")))
+--let x = Konkatenation Epsilon (Konkatenation (Sternbildung (Sternbildung (C "a"))) (Alternative Phi (C "b")))
 
 
 -- beispiel zum testen  Eps + "a" + (Phi | "b")
