@@ -1,0 +1,2 @@
+# Projektarbeit-Haskell-Regulaere-Ausrdruecke
+ 
