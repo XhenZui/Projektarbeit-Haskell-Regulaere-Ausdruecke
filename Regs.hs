@@ -1,7 +1,14 @@
 --Ausdruck/Expression
 data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
 
---Vereinfacht einen Regulären Ausdruck und gibt diesen Zurück
+--Teil 1 Vereinfachen
+
+{- vereinfachung
+Vereinfacht einen Regulären Ausdruck
+Parameter:
+Ausdruck - Ausdruck der Vereinfacht werden soll
+Ausdruck - Rückgabe des vereinfachten Ausdrucks
+-}
 vereinfachung :: Ausdruck -> Ausdruck
 vereinfachung (Phi) = Phi
 vereinfachung (Epsilon) = Epsilon
@@ -19,7 +26,12 @@ vereinfachung (Sternbildung Epsilon) = Epsilon
 vereinfachung (Sternbildung (Sternbildung a)) = vereinfachung (Sternbildung a)
 vereinfachung (Sternbildung a) = Sternbildung (vereinfachung a)
 
---Wandelt einen Regulären ausdruck in einen String zum Printen um
+{- ausdruckPrinten
+Wandelt einen Regulären ausdruck in einen String zum Printen um
+Parameter:
+Ausdruck - Ausdruck der geprinted werden soll
+String - Rückgabe des erstellten Strings
+-}
 ausdruckPrinten :: Ausdruck -> String
 ausdruckPrinten (Phi) = "Phi"
 ausdruckPrinten (Epsilon) = "Eps"
@@ -28,7 +40,12 @@ ausdruckPrinten (Konkatenation a b) = (ausdruckPrinten a) ++ " " ++ (ausdruckPri
 ausdruckPrinten (Alternative a b) = (ausdruckPrinten a) ++ " + " ++ (ausdruckPrinten b) 
 ausdruckPrinten (Sternbildung a) = (ausdruckPrinten a) ++ "*"
 
---Vereinfacht einen Regulären Ausdruck und wandelt ihn in einen String um
+{- vereinfachungMitPrint
+Vereinfacht einen Regulären Ausdruck und wandelt ihn in einen String um
+Parameter:
+Ausdruck - Ausdruck der geprinted und vereinfacht werden soll
+String - Rückgabe des erstellten Strings
+-}
 vereinfachungMitPrint :: Ausdruck -> String
 vereinfachungMitPrint (Phi) = "Phi"
 vereinfachungMitPrint (Epsilon) = "Eps"
@@ -46,140 +63,105 @@ vereinfachungMitPrint (Sternbildung Epsilon) = "Eps"
 vereinfachungMitPrint (Sternbildung (Sternbildung a)) = vereinfachungMitPrint (Sternbildung a)
 vereinfachungMitPrint (Sternbildung a) = (vereinfachungMitPrint a) ++ "*"
 
---Beispiel aus Folie eps ((a*)* (phi + b))
---let x = Konkatenation Epsilon (Konkatenation (Sternbildung (Sternbildung (C "a"))) (Alternative Phi (C "b")))
-
---Beispiele aus folien 
---let r3 = Alternative Phi (C "c")
---let r4 = Alternative (C "c") Phi
---let r5 = Sternbildung(Sternbildung(C "c"))
---let r6 = Sternbildung Phi
---let r7 = Alternative r3 r5
-
-
---Teil Transitionen erstellen
+--Teil 2 Automat erstellen erstellen
 
 --Eine Transition besteht aus int von zustand mit zeichen nach int zustand 
---Zeichen kann auch leer sein
 data Transition = Transition Int Char Int deriving (Show)
 --Automat besteht aus Transitionen und einem Endzustand
 data Automat = Automat [Transition] Int deriving (Show)
 
-
-
---brauch ich das überhaupt???? -> beim anlegen eines neuen automaten ist immer fest wie hoch die zustandsnummer ist  
---und beim zusammenfügen weis ich höchste nummer die ich bekommen hab + erhöhung = neue max zustandsnummer
---maxZustandsnummer :: Automat -> Int
---maxZustandsnummer (Automat[_ _ a]) = if a > 
-
-
---Wandelt Regulären Ausdruck in Automat um
+{- automatErstellen
+Erstellt aus Regulärem Ausdruck einen Passenden Automaten
+Parameter:
+Ausdruck - Ausdruck der Umgewandelt werden soll
+Automat - Rückgabe des erstellten Automaten
+-}
 automatErstellen :: Ausdruck -> Automat
-automatErstellen (C a) = Automat [Transition 1 a 2] 2
-automatErstellen (Sternbildung a) = automatenZusammenführenSternbildung (automatErstellen a)
-automatErstellen (Konkatenation a b) = automatenZusammenführenKonkatenation (automatErstellen a) (automatErstellen b)
-automatErstellen (Alternative a b) = automatenZusammenführenAlternative (automatErstellen a) (automatErstellen b)
+automatErstellen (C zeichen) = Automat [Transition 1 zeichen 2] 2
+automatErstellen (Sternbildung ausdruck) = sternbildung (automatErstellen ausdruck)       
+{-sternbildung Transitionenen 1 - 2, 2 a 3, 3 - 4, 1 - 4, 4 - 2-}  
+    where sternbildung (Automat transitionsListe endzustand) = Automat ((trippleListeErhöhen transitionsListe 1) ++ sternbildungsTransitionen ) (endzustand+2)
+            where   sternbildungsTransitionen = (Transition 1 '-' 2) :
+                                                (Transition 1 '-' endzustandGesamt) :
+                                                (Transition endzustandTeilA '-' 2 ) :         
+                                                (Transition endzustandTeilA '-' endzustandGesamt ) : []                                       
+                    endzustandTeilA = endzustand + 1                              
+                    endzustandGesamt = endzustand + 2                         
+automatErstellen (Konkatenation ausdruckA ausdruckB) = konkatenation (automatErstellen ausdruckA) (automatErstellen ausdruckB)
+{- alternative Transitionen 1 a 2,3 b 4, 1 - 3, 2 - 4-}
+    where konkatenation (Automat transitionsListeA endzustandA) (Automat transitionsListeB endzustandB) = 
+            Automat (transitionsListeA ++ (trippleListeErhöhen transitionsListeB (startzustandTeilB - 1) )) endzustandGesamt
+            where   endzustandGesamt = endzustandA + endzustandB - 1
+                    startzustandTeilB = endzustandA 
+automatErstellen (Alternative ausdruckA ausdruckB) = alternative (automatErstellen ausdruckA) (automatErstellen ausdruckB)
+{- konkatenation Transitionen 1 a 2, 2 b 3-}
+    where alternative (Automat transitionsListeA endzustandA) (Automat transitionsListeB endzustandB) = 
+            Automat (transitionsliste ++ transitionsListeA ++ (trippleListeErhöhen transitionsListeB (startZustandTeilB - 1))) endzustandGesamt
+            where   transitionsliste =  (Transition 1 '-' startZustandTeilB) : 
+                                        (Transition endzustandA '-' endzustandGesamt) : [] 
+                    startZustandTeilB = endzustandA + 1
+                    endzustandTeilB = startZustandTeilB + endzustandB - 1
+                    endzustandGesamt = endzustandTeilB
 
+-- Hilfsfunktionen
 
-
---Führt drei Automaten Zusammen d.h.
-{-
-1 a 2
-3 b 4
-1 - 3
-2 - 4
--} 
-automatenZusammenführenAlternative  :: Automat -> Automat -> Automat 
-automatenZusammenführenAlternative (Automat a b) (Automat c d) = Automat (transitionsliste ++ a ++ (listeVonTrippleErhöhen c (startZustandTeilB - 1))) endzustandTeilGesamt
-    where   transitionsliste =  (Transition 1 '-' startZustandTeilB) : 
-                                (Transition endzustandTeilA '-' endzustandTeilGesamt) : [] 
-            endzustandTeilA = b
-            startZustandTeilB = endzustandTeilA + 1
-            endzustandTeilB = startZustandTeilB + d - 1
-            endzustandTeilGesamt = endzustandTeilB
-
-
-
-{-
-1 a 2
-2 b 3
-start 1 ende 3
+{- zustandsnummernErhöhen
+erhöht alle zustandsnummern im Automat um int und gibt Automat zurück
+Parameter:
+Automat - Automat dessen Zustandsnummern erhöht werden sollen
+Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+Automat - Rückgabe des Automaten
 -}
-
-automatenZusammenführenKonkatenation :: Automat -> Automat -> Automat                                   
-automatenZusammenführenKonkatenation (Automat a b) (Automat c d) = Automat (a ++ (listeVonTrippleErhöhen c (startzustandTeilB - 1) )) endzustandTeilGesamt
-    where   endzustandTeilGesamt = b + d - 1
-            startzustandTeilB = b 
-
-
-
-
-
-
-{-
-Führt beliebige Transitionen in die einer Sternbildung ein
-1 - 2 kann direkt eingetragen werden
-2 a 3 -> wird durch den von unten kommenden automat der um 1 erhöht wird eingefügt
-3 - 4 -> ist max+1 -> max+2 (max des übergebenen automaten)
-1 - 4 -> 1 und max+2 des übergebenen automaten
-4 - 2 -> max+2 des übergebenen automaten und 2
-endzustand ist max+2
--}
-
-automatenZusammenführenSternbildung:: Automat -> Automat 
-automatenZusammenführenSternbildung (Automat a b) = Automat ((listeVonTrippleErhöhen a 1) ++ sternbildungsTransitionen ) (b+2)
-    where   sternbildungsTransitionen = (Transition 1 '-' 2) :
-                                        (Transition 1 '-' endzustandGesamt) :
-                                        (Transition endzustandTeilA '-' 2 ) :         
-                                        (Transition endzustandTeilA '-' endzustandGesamt ) : []                                       
-            endzustandTeilA = b + 1                              
-            endzustandGesamt = b + 2
-        
-
-
-
-
---nimmt 2 Automaten und pack die transitionslisten in eine und nimmt den höheren zustand als endzustand
-automatzusammenführen :: Automat -> Automat -> Automat
-automatzusammenführen (Automat a b) (Automat c d) = Automat (a ++ c) (if b > d then b else d)
-
-
-
---erhöht alle zustandsnummern im Automat um int und gibt Automat zurück
 zustandsnummernErhöhen :: Automat -> Int -> Automat
-zustandsnummernErhöhen (Automat a b) d= Automat (listeVonTrippleErhöhen a d) (b+d)
+zustandsnummernErhöhen (Automat a b) d= Automat (trippleListeErhöhen a d) (b+d)
 
---erhöht alle zustandsnummern in einem Tripple
-listeVonTrippleErhöhen :: [Transition] -> Int -> [Transition]
-listeVonTrippleErhöhen [] i = []
-listeVonTrippleErhöhen (x:xs) i = (zustandsnummerInTrippleErhöhen x i): (listeVonTrippleErhöhen xs i)
+{- zustandsnummernErhöhen
+erhöht alle zustandsnummern in einer Liste von Tripplen
+Parameter:
+[Transition] - Liste von Transitionen der Zustandsnummern erhöht werden sollen
+Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+[Transition] - Rückgabe der Liste von Transitionen mti angepassten Zustandsnummern
+-}
+trippleListeErhöhen :: [Transition] -> Int -> [Transition]
+trippleListeErhöhen [] i = []
+trippleListeErhöhen (x:xs) i = (zustandsnummerInTrippleErhöhen x i): (trippleListeErhöhen xs i)
 
---erhöht alle zahlen in einem Tripple aus int char int
+
+{- zustandsnummerInTrippleErhöhen
+erhöht alle Zustandsnummern in einem Tripple
+Parameter:
+Transition - Transitionen deren Zustandsnummern erhöht werden sollen
+Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+Transition - Rückgabe der Transitionen mit angepassten Zustandsnummern
+-}
 zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
 zustandsnummerInTrippleErhöhen (Transition a b c) d = Transition (a+d) (b) (c+d)
 
+--Teil 3 Automat Ausführen 
 
-
-
-
-
---Teil Ausführen - Parameter Automat Startzustand Wort das Geprüft werden soll , gibt True/False zurück ob das Wort zum Automat/Ausdruck passt
+{- ausführen
+Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten ist
+Parameter:
+Automat - Automat der ausgeführt werden soll
+Int - Startzustand in dem der Automat gestartet werden soll
+String - Wort das geprüft werden soll
+Bool - Rückgabe ob wort teil des Automaten war oder nicht
+-}
 ausführen :: Automat -> Int -> String -> Bool
-ausführen (Automat a b) zustand [] =    if b == zustand 
-                                        then True 
-                                        else any (== True) (map helper gültigeTransitionen)
-    where   gültigeTransitionen = filter (\(Transition x _ _) -> x == zustand) a      
-            helper (Transition x y z) 
-                | y == '-' = ausführen (Automat a b) z []
+ausführen (Automat transitionsListe endzustand) zustand [] =    if endzustand == zustand
+                                                                then True 
+                                                                else any (== True) (map rekursion gültigeTransitionen)
+    where   gültigeTransitionen = filter (\(Transition x _ _) -> x == zustand) transitionsListe      
+            rekursion (Transition _ zeichen zielZustand) 
+                | zeichen == '-' = ausführen (Automat transitionsListe endzustand) zielZustand []
                 | otherwise = False
-ausführen (Automat a b) zustand (d:e) = any (== True) (map helper gültigeTransitionen)
-    where   gültigeTransitionen = filter (\(Transition x _ _) -> x == zustand) a      
-            helper (Transition x y z) 
-                | y == '-' = ausführen (Automat a b) z (d:e)
-                | y == d = ausführen (Automat a b) z e
+ausführen (Automat transitionsListe endzustand) zustand (aktuellesZeichen:restString) = any (== True) (map rekursion gültigeTransitionen)
+    where   gültigeTransitionen = filter (\(Transition x _ _) -> x == zustand) transitionsListe    
+            rekursion (Transition _ zeichen zielZustand) 
+                | zeichen == '-' = ausführen (Automat transitionsListe endzustand) zielZustand (aktuellesZeichen:restString)
+                | zeichen == aktuellesZeichen = ausführen (Automat transitionsListe endzustand) zielZustand restString
                 | otherwise = False
                 
-
 
 
 
