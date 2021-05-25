@@ -1,4 +1,11 @@
 
+--"Epsilon" der leere String
+-- "Phi" die leere Sprache
+-- das Zeichen c
+-- Alternative zwischen r1 und r2
+-- Verkettung/Konkatenation von r1 mit r2
+-- Kleenesche Hülle, entweder leerer String oder beliebige Verkettung von r
+
 
 annahme es werden nur bereits vereinfachte ausdrücke in automaten umgewandelt
 
@@ -90,7 +97,7 @@ Alternative
 
 
 # umwandlung in step 2 -> lokale nach globale nummern umwandeln
-Transitionstep2 = Transition [int,char,int] ->>> evtl start und endzustand direkt in die struktur mit übernehmen
+Transitionstep2 = Transition [int,char,int] Int  ->> aktuelle endzustandsnummer + startzustandsnummer braucht nicht mitgegeben werden ist immer 1
 
 funktion parameter Transitionsliste rückgabe Transitionsliste
 rückgabe ist immer transitionsliste die nichtmehr verschachtelt ist
@@ -142,3 +149,44 @@ Konkatenation
         + transition 2 d 3
 
 
+# beispielsachen zum Testen
+
+Konkatenation (C 'a') (C 'b')
+müsste geben 
+1a2
+2b3
+
+Sternbildung(Konkatenation (C 'a') (C 'b'))
+
+müsste geben 
+1-2
+2a3
+3b4
+4-5
+4-
+
+# Beispiel (ab)*
+let a = Sternbildung(Konkatenation (C 'a') (C 'b'))
+let b = regulärerAusdruckUmwandeln a
+let c = ausführen b 1 "ab"
+
+
+# Beispiel 2  (a(a|b)*b) | (b(a|b)*a)
+let a = Alternative(Konkatenation (C 'a') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b')))(Konkatenation (C 'b') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'a')))
+let b = regulärerAusdruckUmwandeln a
+let c = ausführen b 1 "ab"
+
+# Beispiel 3 (a(a|b)*b)
+let a = Konkatenation (C 'a') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b'))
+let b = regulärerAusdruckUmwandeln a
+let c = ausführen b 1 "ab"
+
+# Beispiel 4 (a|b)*b
+let a = Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b')
+let b = regulärerAusdruckUmwandeln a
+let c = ausführen b 1 "ab"
+
+# Beispiel 4 (a|b)*
+let a = Sternbildung (Alternative (C 'a')(C 'b'))
+let b = regulärerAusdruckUmwandeln a
+let c = ausführen b 1 "ab"
