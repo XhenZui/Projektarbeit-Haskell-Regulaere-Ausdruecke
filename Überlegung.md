@@ -167,26 +167,37 @@ müsste geben
 
 # Beispiel (ab)*
 let a = Sternbildung(Konkatenation (C 'a') (C 'b'))
-let b = regulärerAusdruckUmwandeln a
+let b = automatErstellen a
 let c = ausführen b 1 "ab"
 
 
 # Beispiel 2  (a(a|b)*b) | (b(a|b)*a)
 let a = Alternative(Konkatenation (C 'a') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b')))(Konkatenation (C 'b') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'a')))
-let b = regulärerAusdruckUmwandeln a
+let b = automatErstellen a
 let c = ausführen b 1 "ab"
 
 # Beispiel 3 (a(a|b)*b)
 let a = Konkatenation (C 'a') (Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b'))
-let b = regulärerAusdruckUmwandeln a
+let b = automatErstellen a
 let c = ausführen b 1 "ab"
 
 # Beispiel 4 (a|b)*b
 let a = Konkatenation (Sternbildung (Alternative (C 'a')(C 'b'))) (C 'b')
-let b = regulärerAusdruckUmwandeln a
+let b = automatErstellen a
 let c = ausführen b 1 "ab"
 
 # Beispiel 4 (a|b)*
 let a = Sternbildung (Alternative (C 'a')(C 'b'))
-let b = regulärerAusdruckUmwandeln a
+let b = automatErstellen a
 let c = ausführen b 1 "ab"
+
+
+--Beispiel aus Folie eps ((a*)* (phi + b))
+--let x = Konkatenation Epsilon (Konkatenation (Sternbildung (Sternbildung (C "a"))) (Alternative Phi (C "b")))
+
+--Beispiele aus folien 
+--let r3 = Alternative Phi (C "c")
+--let r4 = Alternative (C "c") Phi
+--let r5 = Sternbildung(Sternbildung(C "c"))
+--let r6 = Sternbildung Phi
+--let r7 = Alternative r3 r5
