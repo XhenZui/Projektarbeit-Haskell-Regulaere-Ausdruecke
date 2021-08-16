@@ -8,7 +8,7 @@ Die Einarbeitung in Haskell wurde mit dem Beginner's Guide "Lean you a Haskell" 
 
 ## Haskell Erweiterung & Ausführung des Codes in VS Code
 
-Der Code wurde in Visual Studio Code mit GHC Haskell erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
+Der Code wurde in Visual Studio Code mit GHC (Glasgow Haskell Compiler) erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
 Die Haskell Erweiterung wird zum kompilieren und ausführen des Codes verwendet. Für verbessertes Code Highlighting wurde noch eine Haskell Syntax Highlighting Erweiterung verwendet https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell .
 
 Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit `ghci` die GHC interactive console gestartet werden. Als nächstes muss der Code mit `:l Regs.hs` kompiliert werden.
@@ -43,6 +43,7 @@ Da in unserer Algebraischen Datenstruktur konkatenationen immer zweistellig sind
 
 ## Vereinfachung von Regulären Ausdrücken
 vereinfachung :: Ausdruck -> Ausdruck
+
 Die funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
 Ausdruck zurück. 
 
@@ -79,30 +80,41 @@ In der GHCI
     ghci> vereinfacht
     Sternbildung (C 'A')
 
-## printen von regulärem ausdruck
-Bei der Funktion Ausdruck Printen wird ein Ausdruck in einen String umgewandelt
-Dabei wird wie bei der vorheringen funktion das durchschreitten rekursiv durchgeführt und das unterscheiden der 
-verschiedenen situationen mithilfe von Pattern matching gemacht
-beispiel code ausdruckPrinten Konkatenation((C"A")(C"B")
-ergebnis AB
+## Reguläre Ausdrücke in Strings Umwandeln
+ausdruckPrinten :: Ausdruck -> String
 
-datenstruktur transitionen
+Mithilfe der Funktion können Reguläre Ausdrücke in Strings zum Ausgeben umgewandelt werden.
+Dabei wird wie bei der vorheringen Funktion das durchschreitten rekursiv durchgeführt und das vereinfachen mithilfe von Pattern Matching
+
+In der GHCI
+
+    ghci> ausdruckPrinten (Sternbildung (Konkatenation (C 'A') (C 'B')))
+    "(A B)*"
+
+
+## Datenstruktur transitionen
 data Transition = Transition Int Char Int deriving (Show)
-die Datenstruktur wird zum erstellen von Transitionen innerhalb eines Automaten benutzt
-dabei steht der erste Int für den ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll
-- für einen spontanen übergang wir "-" eingesetzt der zweite int steht für den zielzustand der nach ausführen
-der transition erreicht wird
 
-beispiel Transition 1 "A" 2
-ist die Transition von Zustand 1 mit dem Zeichen "A" in den Zustand 2
+Die Datenstruktur wird zum erstellen von Transitionen zur Ausführung in Automaten verwendet.
+Dabei steht der erste Int für den Ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll. Für einen spontanen Übergang wird "-" eingesetzt. Der zweite int steht für den Zielzustand der nach ausführen
+der Transition erreicht wird.
 
+beispiel Transition 1 'A' 2
+Ist die Transition vom Zustand 1 mit dem Zeichen "A" in den Zustand 2.
 
-datenstruktur Automat
+in der GHCI
+
+    ghci> let transition = Transition 1 'A' 2
+    ghci> transition
+    Transition 1 'A' 2
+
+## Datenstruktur Automat
 data Automat = Automat [Transition] Int deriving (Show)
-Die Datenstruktur wird zum erstellen von Automaten benutzt
+
+Die Datenstruktur wird zum erstellen von Automaten benutzt.
 Ein Automat enthält eine Liste von Transitionen und einen Int für den Endzustand 
-des Automaten - der Startzustand ist immer die 1 daher wird er hier nicht angegeben
-alle Automaten haben nur einen Start und Endzustand
+des Automaten. Der Startzustand ist immer die 1 daher muss er nicht angegeben werden.
+Alle Automaten haben nur einen Start und Endzustand.
 
 ## Hilfsfunktion
 

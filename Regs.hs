@@ -38,7 +38,7 @@ ausdruckPrinten (Epsilon) = "Eps"
 ausdruckPrinten (C a) = a:[]
 ausdruckPrinten (Konkatenation a b) = (ausdruckPrinten a) ++ " " ++ (ausdruckPrinten b)
 ausdruckPrinten (Alternative a b) = (ausdruckPrinten a) ++ " + " ++ (ausdruckPrinten b) 
-ausdruckPrinten (Sternbildung a) = (ausdruckPrinten a) ++ "*"
+ausdruckPrinten (Sternbildung a) = "(" ++ (ausdruckPrinten a) ++ ")*"
 
 {- vereinfachungMitPrint
 Vereinfacht einen Regulären Ausdruck und wandelt ihn in einen String um
