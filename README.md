@@ -1,35 +1,28 @@
-# Projektarbeit-Haskell-Regulaere-Ausrdruecke
+# Projektarbeit-Haskell-Regulaere-Ausdruecke
 
 In diesem Github Repository geht es um die Projekt Arbeit von Jonas E die sich mit der Umsetzung von Diversen Anwendungsfällen rund um Reguläre Ausdrücke in der Programmiersprache Haskell beschäftigt.
 
 Die Aufgabestellungen Sind unter https://sulzmann.github.io/SoftwareProjekt/labor.html#(10) zu finden.
 
-todo ein großes durchgängiges beispiel für das die wesentlichen funktionen ausgeführt werden.
+Die Einarbeitung in Haskell wurde mit dem Beginner's Guide "Lean you a Haskell" durchgeführt dieser ist unter http://learnyouahaskell.com/ zu finden.
+
+## Haskell Erweiterung & Ausführung des Codes in VS Code
+
+Der Code wurde in Visual Studio Code mit GHC Haskell erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell .
+Die Haskell Erweiterung wird zum kompilieren und ausführen des Codes verwendet. Für verbessertes Code Highlighting wurde noch eine Haskell Syntax Highlighting Erweiterung verwendet https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell .
+
+Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit ghci die GHC interactive console gestartet werden. Als nächstes muss der Code mit <:l Regs.hs> kompiliert werden.
+Nun kann man in der Konsole beliebig Funktionen aufrufen.
 
 
-Doku 
+## Datenstruktur regulärer ausdruck
+Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck"
 
-einführung was ist aufgabe?
-
-
-
-selbständige einarbeitung mit can i learn you a haskel
+data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
 
 
-Der Code wurde in Visual Studio Code mit ghci Haskell erweiterung geschrieben
-diese wird auch zum kompilen und ausführen des Codes gebraucht
-zum kompilen :l Regs.hs
-zum ausführen einfach Funktionen in ghci console aufrufen
-mit let Variablenname = wert 
-können variablen erstellt werden
-
-
-grundprinzip
-
-datenstruktur regulärer ausdruck
-Basis für alle Regulären Ausdrücke ist die Algebraische datenstruktur "Ausdruck"
 Mithilfe dieser Datenstruktur Lassen sich beliebige gültige Reguläre Ausdrucke erstellen es ist nicht möglich
-mit dem algebraischen datentyp ein objekt zu erstelen das nicht dem konstruktor entspricht
+mit dem algebraischen datentyp ein objekt zu erstellen das nicht dem konstruktor entspricht
 besonders zu beachten ist hierbei die rekursive struktur des datentyps möchte man zb.
 eine Konkatenation von "A" und "B" darstellen dann besteht dieser aus 3 teil Ausdrücken
 aus C "A" ,  C "B" und Konkatenation Ausdruck Ausdruck - dabei fügt man die Teilausdrücke für die Zeichen
@@ -37,9 +30,8 @@ in den Ausdruck der konkatenation also hier Konkatenation (C "A") (C "B")
 die klammern sind wichtig da das erstellen einer konkatenation zwei parameter erwartet
 alternativ könnte man auch die Teil ausdrücke C"A" und C"B" in zwei Variablen speichern und stattdessen die 
 Variablen angeben also z.b. Teil1 = C "A", Teil2 = C "B" und dann einfügen Konkatenation Teil1 Teil2
-data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
 
-code beispiele zum erstellen von Ausdrücken
+### Code beispiele zum erstellen von Ausdrücken
 der code zum erstellen des Ausdrucks (A|B)*
 Sternbildung(Konkatenation (C "A") (C "B"))
 
@@ -51,7 +43,7 @@ Konkatenation(Konkatenation((C"A")(C"B")) (C"C"))
 da in unserer Struktur konkatenationen immer zweistellig sind muss für die konkatenation von 3 zeichen
 2x konkateniert werden
 
-vereinfachung regulärer ausdruck
+## vereinfachung regulärer ausdruck
 vereinfachung :: Ausdruck -> Ausdruck
 Die funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
 Ausdruck zurück. Das Durchschreiten des Ausdrucks erfolgt Rekursiv. Das erkennen welche vereinfachungsregel
@@ -70,7 +62,7 @@ liste der regeln aus doku einfügen
 aufrufbaum für beispiel einfügen
 
 
-printen von regulärem ausdruck
+## printen von regulärem ausdruck
 Bei der Funktion Ausdruck Printen wird ein Ausdruck in einen String umgewandelt
 Dabei wird wie bei der vorheringen funktion das durchschreitten rekursiv durchgeführt und das unterscheiden der 
 verschiedenen situationen mithilfe von Pattern matching gemacht
@@ -95,7 +87,7 @@ Ein Automat enthält eine Liste von Transitionen und einen Int für den Endzusta
 des Automaten - der Startzustand ist immer die 1 daher wird er hier nicht angegeben
 alle Automaten haben nur einen Start und Endzustand
 
-Hilfsfunktion
+## Hilfsfunktion
 
 Zustandsnummern Erhöhen
 zustandsnummernErhöhen :: Automat -> Int -> Automat
@@ -122,7 +114,7 @@ Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
 Transition - Rückgabe der Transitionen mit angepassten Zustandsnummern
 
 
-Automat erstellen
+## Automat erstellen
 erstellt aus einem Regulären Ausdruck einen Automaten der genutzt werden kann
 um zu prüfen ob ein Wort teil des Regulären Ausdrucks ist
 Parameter:
@@ -135,7 +127,7 @@ da sonst das ausführen des Automaten in einer endlos schleife hängen bleibt
 
 aufrufbaum für ein beispiel
 
-    umwandlungsregeln 
+umwandlungsregeln 
 C
 konkatenation
 Sternbildung
@@ -146,7 +138,7 @@ sternbildung schon rausgeworfen wird
     vermeiden von schleifen mit epsilon übergängen
 
 
-Automat ausführen
+## Automat ausführen
 Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten bzw des regulären ausdrucks
 aus dem der Automat erstellt wurde. Wenn das Wort teil des Automaten war wird true zurück gegeben
 falls nicht false
@@ -167,3 +159,6 @@ kann evtl bei der filter funktion in automat ausführen auch gleich geprüft wer
 
 aufrufbaum für ein beispiel erstellen
 
+
+
+Vergleich zu c++ umsetzung
