@@ -2,18 +2,20 @@
 
 In diesem Github Repository geht es um die Projekt Arbeit von Jonas E die sich mit der Umsetzung von Diversen Anwendungsfällen rund um Reguläre Ausdrücke in der Programmiersprache Haskell beschäftigt.
 
-Die Aufgabestellungen Sind unter https://sulzmann.github.io/SoftwareProjekt/labor.html#(10) zu finden.
+Die Aufgabestellungen sind unter https://sulzmann.github.io/SoftwareProjekt/labor.html#(10) zu finden.
 
 Die Einarbeitung in Haskell wurde mit dem Beginner's Guide "Lean you a Haskell" durchgeführt dieser ist unter http://learnyouahaskell.com/ zu finden.
 
 ## Haskell Erweiterung & Ausführung des Codes in VS Code
 
-Der Code wurde in Visual Studio Code mit GHC Haskell erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell .
+Der Code wurde in Visual Studio Code mit GHC Haskell erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
 Die Haskell Erweiterung wird zum kompilieren und ausführen des Codes verwendet. Für verbessertes Code Highlighting wurde noch eine Haskell Syntax Highlighting Erweiterung verwendet https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell .
 
 Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit ghci die GHC interactive console gestartet werden. Als nächstes muss der Code mit <:l Regs.hs> kompiliert werden.
 Nun kann man in der Konsole beliebig Funktionen aufrufen.
 
+I think you should use an
+`<addr>` element here instead.
 
 ## Datenstruktur regulärer ausdruck
 Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck"
@@ -161,4 +163,4 @@ aufrufbaum für ein beispiel erstellen
 
 
 
-Vergleich zu c++ umsetzung
+## Vergleich zu c++ umsetzung
