@@ -16,51 +16,68 @@ Nun kann man in der Konsole beliebig Funktionen aufrufen.
 
 
 ## Datenstruktur regulärer ausdruck
-Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck"
+Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck".
 
->data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung >Ausdruck deriving (Show)
+    data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
 
-
-Mithilfe dieser Datenstruktur Lassen sich beliebige gültige Reguläre Ausdrucke erstellen es ist nicht möglich
-mit dem algebraischen datentyp ein objekt zu erstellen das nicht dem konstruktor entspricht
-besonders zu beachten ist hierbei die rekursive struktur des datentyps möchte man zb.
+Mithilfe dieser Datenstruktur Lassen sich beliebige gültige Reguläre Ausdrucke erstellen.
+Besonders zu beachten ist hierbei die rekursive Struktur des Datentyps möchte man zb.
 eine Konkatenation von "A" und "B" darstellen dann besteht dieser aus 3 teil Ausdrücken
-aus C "A" ,  C "B" und Konkatenation Ausdruck Ausdruck - dabei fügt man die Teilausdrücke für die Zeichen
-in den Ausdruck der konkatenation also hier Konkatenation (C "A") (C "B")
-die klammern sind wichtig da das erstellen einer konkatenation zwei parameter erwartet
-alternativ könnte man auch die Teil ausdrücke C"A" und C"B" in zwei Variablen speichern und stattdessen die 
-Variablen angeben also z.b. Teil1 = C "A", Teil2 = C "B" und dann einfügen Konkatenation Teil1 Teil2
+aus `C "A"` ,  `C "B"` und `Konkatenation Ausdruck Ausdruck` - dabei fügt man die Teilausdrücke für die Zeichen
+in den Ausdruck der konkatenation also hier `Konkatenation (C "A") (C "B")`.
+Die klammern müssen gesetzt werden da das erstellen einer konkatenation zwei parameter erwartet und ohne die klammern C und "A" jeweils als ein Parameter interpretiert werden würden.
+Alternativ könnte man auch die Teil ausdrücke `C "A"` und `C "B"` in zwei Variablen speichern und stattdessen die 
+Variablen angeben also z.b. `let Teil1 = C "A"`, `let Teil2 = C "B"` und dann in die Konkatentation einfügen `Konkatenation Teil1 Teil2`.
 
-### Code beispiele zum erstellen von Ausdrücken
-der code zum erstellen des Ausdrucks (A|B)*
-Sternbildung(Konkatenation (C "A") (C "B"))
+### Code Beispiele zum Erstellen von Ausdrücken
+Der code zum erstellen des Ausdrucks (A B)* 
+   Sternbildung(Konkatenation (C "A") (C "B"))
 
 Ausdruck A A*
-Konkatenation ((C "A") (Sternbildung (C"A"))
+   Konkatenation ((C "A") (Sternbildung (C"A"))
 
 Ausdruck A B C
-Konkatenation(Konkatenation((C"A")(C"B")) (C"C"))
-da in unserer Struktur konkatenationen immer zweistellig sind muss für die konkatenation von 3 zeichen
-2x konkateniert werden
+    Konkatenation(Konkatenation((C"A")(C"B")) (C"C"))
 
-## vereinfachung regulärer ausdruck
+Da in unserer Algebraischen Datenstruktur konkatenationen immer zweistellig sind muss für die Konkatenation von 3 zeichen zwei mal Konkateniert werden.
+
+## Vereinfachung von Regulären Ausdrücken
 vereinfachung :: Ausdruck -> Ausdruck
 Die funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
-Ausdruck zurück. Das Durchschreiten des Ausdrucks erfolgt Rekursiv. Das erkennen welche vereinfachungsregel
+Ausdruck zurück. 
+
+    linkeSeite ==> rechteSeite
+
+    eps r ==> r
+
+    r1 r2 ==> phi falls L(r1)={} oder L(r2)={}
+
+    r* ==> eps falls L(r)={}
+
+    (r*)* ==> r*
+
+    r + r ==> r
+
+    r1 + r2 ==> r2 falls L(r1)={}
+
+    r1 + r2 ==> r1 falls L(r2)={}
+Vereinfachunsregeln aus der Aufgabenstellung.
+Hinweis "+" steht für Alternative und Leerzeichen für Konkatenation
+
+Das Durchschreiten des Ausdrucks erfolgt Rekursiv. Das erkennen welche vereinfachungsregel
 angewendet werden soll wird mit Pattern matching erreicht dabei prüft die funktion nacheinander von oben nach
-unten in der methode welches pattern er hat und wendet dann die funktion nach dem gleichzeichen aus, wichtig
-dabei zu beachten ist das immer nur der oberste teil des ausdrucks bei jedem durchlauf betrachtet wird
-gibt man zum beispiel den Ausdruck Vereinfachung Konkatenation ((C "A") (Sternbildung (C"A")) an dann wird im ersten durchlauf
-erkannt das es sich um eine Konkatenation mit zwei beliebigen parametern a b handelt. Da sich dies nicht vereinfachen
-lässt wird die konkatenation beibehalten und es werden für die Darunter liegende Teilausdrücke
-jeweils die Vereinfachung funktion aufgerufen. Beim ersten aufruf wird erkannt das es sich um ein C handelt 
-da es keine weitere verschachtelung gibt wird C "A" zurück gegeben. Beim anderen aufruf wird erkannt das es sich
-um eine Sternbildung mit beliebigem Parameter handelt, für diesen parameter wird wider vereinfachung aufgerufen
-anschliesend wird erkannt das es sich um ein C handelt und dieses wider direkt zurück gegeben
+unten in der methode welches pattern übergeben wurde und wendet dann die funktion die hinter dem gleichzeichen steht an, wichtig dabei zu beachten ist das immer nur der Hierarchisch höchstegelegene teil des ausdrucks bei einem durchlauf betrachtet wird. 
 
-liste der regeln aus doku einfügen
-aufrufbaum für beispiel einfügen
+### Beispiel mit Code
+Gibt man zum beispiel den Ausdruck `Sternbildung (Alternative (C 'A') (C 'A'))` an dann wird im ersten Durchlauf erkannt das es sich um eine Sternbildung mit einem Beliebigen Parameter handelt - da hier keine der Regeln anwendung findet wird Vereinfachung für den hierarchisch daruterliegenden Ausdruck `Alternative (C 'A') (C 'A')` aufgerufen hier wird erkannt das es sich um eine Alternative von zwei gleichen Zeichen handelt daher wird nur `C 'A'` zurückgegeben.
+Das Ergebnis ist dann `Sternbildung (C 'A')`.
 
+In der GHCI
+
+    ghci> let ausdruck = Sternbildung (Alternative (C 'A') (C 'A'))
+    ghci> let vereinfacht = vereinfachung ausdruck
+    ghci> vereinfacht
+    Sternbildung (C 'A')
 
 ## printen von regulärem ausdruck
 Bei der Funktion Ausdruck Printen wird ein Ausdruck in einen String umgewandelt
