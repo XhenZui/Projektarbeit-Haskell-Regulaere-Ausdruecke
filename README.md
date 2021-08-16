@@ -11,16 +11,14 @@ Die Einarbeitung in Haskell wurde mit dem Beginner's Guide "Lean you a Haskell" 
 Der Code wurde in Visual Studio Code mit GHC Haskell erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
 Die Haskell Erweiterung wird zum kompilieren und ausführen des Codes verwendet. Für verbessertes Code Highlighting wurde noch eine Haskell Syntax Highlighting Erweiterung verwendet https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell .
 
-Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit ghci die GHC interactive console gestartet werden. Als nächstes muss der Code mit <:l Regs.hs> kompiliert werden.
+Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit `ghci` die GHC interactive console gestartet werden. Als nächstes muss der Code mit `:l Regs.hs` kompiliert werden.
 Nun kann man in der Konsole beliebig Funktionen aufrufen.
 
-I think you should use an
-` test` element here instead.
 
 ## Datenstruktur regulärer ausdruck
 Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck"
 
-data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
+>data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung >Ausdruck deriving (Show)
 
 
 Mithilfe dieser Datenstruktur Lassen sich beliebige gültige Reguläre Ausdrucke erstellen es ist nicht möglich
