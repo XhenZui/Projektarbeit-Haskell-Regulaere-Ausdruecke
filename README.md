@@ -15,7 +15,7 @@ Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. 
 Nun kann man in der Konsole beliebig Funktionen aufrufen.
 
 I think you should use an
-`<addr>` element here instead.
+` test` element here instead.
 
 ## Datenstruktur regulärer ausdruck
 Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck"
