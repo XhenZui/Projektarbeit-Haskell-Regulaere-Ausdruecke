@@ -99,7 +99,7 @@ Die Datenstruktur wird zum erstellen von Transitionen zur Ausführung in Automat
 Dabei steht der erste Int für den Ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll. Für einen spontanen Übergang wird "-" eingesetzt. Der zweite int steht für den Zielzustand der nach ausführen
 der Transition erreicht wird.
 
-beispiel Transition 1 'A' 2
+Beispiel Transition 1 'A' 2
 Ist die Transition vom Zustand 1 mit dem Zeichen "A" in den Zustand 2.
 
 in der GHCI
@@ -116,15 +116,25 @@ Ein Automat enthält eine Liste von Transitionen und einen Int für den Endzusta
 des Automaten. Der Startzustand ist immer die 1 daher muss er nicht angegeben werden.
 Alle Automaten haben nur einen Start und Endzustand.
 
-## Hilfsfunktion
+Beispiel Automat [Transition 1 'A' 2] 2
+in der GHCI
 
-Zustandsnummern Erhöhen
+    ghci> let automat = Automat [Transition 1 'A' 2] 2
+    ghci> automat
+    Automat [Transition 1 'A' 2] 2
+
+## Hilfsfunktionen
+
+Eine Reihe von Hilfsfunktionen die Beim erstellen von Automaten verwendet werden.
+
 zustandsnummernErhöhen :: Automat -> Int -> Automat
-erhöht alle zustandsnummern im Automat um int und gibt Automat zurück
-Parameter:
-Automat - Automat dessen Zustandsnummern erhöht werden sollen
-Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
-Automat - Rückgabe des Automaten
+
+
+Erhöht alle zustandsnummern im Automat um Int und gibt Automat zurück.
+*Parameter:
+*Automat - Automat dessen Zustandsnummern erhöht werden sollen
+*Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+*Automat - Rückgabe des Automaten
 
 Tripple Liste Erhöhen
 trippleListeErhöhen :: [Transition] -> Int -> [Transition]
