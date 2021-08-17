@@ -131,44 +131,47 @@ zustandsnummernErhöhen :: Automat -> Int -> Automat
 
 
 Erhöht alle zustandsnummern im Automat um Int und gibt Automat zurück.
-*Parameter:
-*Automat - Automat dessen Zustandsnummern erhöht werden sollen
-*Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
-*Automat - Rückgabe des Automaten
 
-Tripple Liste Erhöhen
+Parameter:
+* Automat - Automat dessen Zustandsnummern erhöht werden sollen
+* Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+* Automat - Rückgabe des Automaten
+
 trippleListeErhöhen :: [Transition] -> Int -> [Transition]
-erhöht alle zustandsnummern in einer Liste von Tripplen
-Parameter:
-[Transition] - Liste von Transitionen der Zustandsnummern erhöht werden sollen
-Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
-[Transition] - Rückgabe der Liste von Transitionen mti angepassten Zustandsnummern
 
-Tripple zustand erhöhen
-zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
-erhöht alle Zustandsnummern in einem Tripple
+Erhöht alle zustandsnummern in einer Liste von Tripplen
+
 Parameter:
-Transition - Transitionen deren Zustandsnummern erhöht werden sollen
-Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
-Transition - Rückgabe der Transitionen mit angepassten Zustandsnummern
+* [Transition] - Liste von Transitionen der Zustandsnummern erhöht werden sollen
+* Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+* [Transition] - Rückgabe der Liste von Transitionen mti angepassten Zustandsnummern
+
+
+zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
+
+Erhöht alle Zustandsnummern in einem Tripple.
+
+Parameter:
+* Transition - Transitionen deren Zustandsnummern erhöht werden sollen
+* Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
+* Transition - Rückgabe der Transitionen mit angepassten Zustandsnummern
 
 
 ## Automat erstellen
-erstellt aus einem Regulären Ausdruck einen Automaten der genutzt werden kann
-um zu prüfen ob ein Wort teil des Regulären Ausdrucks ist
-Parameter:
-Ausdruck - Ausdruck der Umgewandelt werden soll
-Automat - Rückgabe des erstellten Automaten
-Das durchlaufen des audrucks erfolgt rekursiv - die unterscheidung von verscheidenen situationen
-erfolgt mithilfe von Pattern matching
-wichtig beim erstellen des automaten ist das es keine Kreisläufe von Spontanen übergängen geben darf
-da sonst das ausführen des Automaten in einer endlos schleife hängen bleibt
+Erstellt aus einem Regulären Ausdruck einen Automaten der genutzt werden kann
+um zu prüfen ob ein Wort teil des Regulären Ausdrucks ist.
+Das durchlaufen des Audrucks erfolgt rekursiv und mithilfe von Pattern matching.
+Wichtig beim erstellen des automaten ist das es keine Kreisläufe von Spontanen übergängen geben darf
+da sonst das ausführen des Automaten in einer endlos Schleife hängen bleibt.
 
-aufrufbaum für ein beispiel
+Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze.
 
-umwandlungsregeln 
-C
-konkatenation
+![](Alternative.png | width=100)
+
+C - Aus `C 'A'` wird `Transition 1 'A' 2`
+
+Konkatenation - `Aus Konkatenation teilausdruck1 teilausdruck2` wird `Transition 1 teilausdruck1 2` und `Transition 2 teilausdruck2 3` wichtig ist hierbei zu beachten das die Zustandsnummern innerhalb der Teilausdrücke und auch der Zustand nach dem ersten Teilausdruck und dem zweiten Teilausdruck entsprechend erhöht werden müssen falls innerhalb der teilausdrücke mehr als nur ein Zeichen eingefügt wird.
+
 Sternbildung
 Alternative
 
