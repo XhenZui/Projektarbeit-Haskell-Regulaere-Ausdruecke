@@ -166,7 +166,9 @@ da sonst das ausführen des Automaten in einer endlos Schleife hängen bleibt.
 
 Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze.
 
-![](Alternative.png | width=100)
+![](Alternative.png )
+<img src="Alternative.png" width="48">
+
 
 C - Aus `C 'A'` wird `Transition 1 'A' 2`
 
