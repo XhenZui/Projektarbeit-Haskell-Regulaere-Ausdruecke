@@ -164,22 +164,29 @@ Das durchlaufen des Audrucks erfolgt rekursiv und mithilfe von Pattern matching.
 Wichtig beim erstellen des automaten ist das es keine Kreisläufe von Spontanen übergängen geben darf
 da sonst das ausführen des Automaten in einer endlos Schleife hängen bleibt.
 
+### Umwandlungsregeln
 Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze.
 
-![](Alternative.png )
-<img src="Alternative.png" width="48">
+
+
 
 
 C - Aus `C 'A'` wird `Transition 1 'A' 2`
 
-Konkatenation - `Aus Konkatenation teilausdruck1 teilausdruck2` wird `Transition 1 teilausdruck1 2` und `Transition 2 teilausdruck2 3` wichtig ist hierbei zu beachten das die Zustandsnummern innerhalb der Teilausdrücke und auch der Zustand nach dem ersten Teilausdruck und dem zweiten Teilausdruck entsprechend erhöht werden müssen falls innerhalb der teilausdrücke mehr als nur ein Zeichen eingefügt wird.
+<img src="C_einfügen.png" width="500">
 
-Sternbildung
+Konkatenation - Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekursiv für die Beiden Teilausdrücke der Konkatenation wider automat erstellen aufgerufen und anschliesend in den ergebnissen der rekursiven teilaufrufe die Zustandsnummern angepasst. Beispiel `Konkatenation teilausdruck1 teilausdruck2`  Teilausdruck 1 und 2 werden hier als `C 'A'`angenommen. D.h. der rekursive aufruf erstellet zunäsht Transitionen für die beiden Teilausdrücke, hier `Transition 1 'A' 2` anschliesend werden diese zurück gegeben und beim zusammenfügen der konkatenation werden die Transitionen aus Teilausdruck 1 übernommen und die Transition aus Teilausdruck 2 werden um Höchste Zustandsnummer aus Teilausdruck 1 minus eins erhöht. Hier also 2 - 1 = 1 , das ergibt dann für den Teilausdruck 2 die `Transition 2 'A' 3`. Sind die Teilausdrücke komplexer müssen eben von entsprechend mehr daruter liegenden Transitionen die Zustandsnummern angepasst werden.
+
+<img src="Konkatenation.png" width="500">
+
+Sternbildung - Bei der Sternbildung müssen einige zusätzliche Übergange eingefügt werden um zu vermeiden das es eine Schleife mit nur Epsilon übergängen entstehen. Zudem müssen die zustandsnummern innerhalb ds Teilausdrucks sowie die der beiden übergänge nach dem Teilausdruck angepasst werden abhängig davon wie hoch die Zustandsnummern innerhalb des Teilausdrucks sind.
+
+<img src="Sternbildung.png" width="500">
+
 Alternative
 
-bilder wie umwandlung passieren muss damit keine kreise entstehen - hinweis das ja beim vereinfachen doppelte
-sternbildung schon rausgeworfen wird
-    vermeiden von schleifen mit epsilon übergängen
+<img src="Alternative.png" width="500">
+
 
 
 ## Automat ausführen
