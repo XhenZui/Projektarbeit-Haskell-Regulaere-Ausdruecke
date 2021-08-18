@@ -41,7 +41,7 @@ Ausdruck A B C
 
 Da in unserer Algebraischen Datenstruktur konkatenationen immer zweistellig sind muss für die Konkatenation von 3 zeichen zwei mal Konkateniert werden.
 
-## Vereinfachung von Regulären Ausdrücken
+## Funktion Vereinfachung von Regulären Ausdrücken
 vereinfachung :: Ausdruck -> Ausdruck
 
 Die funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
@@ -80,7 +80,7 @@ In der GHCI
     ghci> vereinfacht
     Sternbildung (C 'A')
 
-## Reguläre Ausdrücke in Strings Umwandeln
+## Funktion Reguläre Ausdrücke in Strings Umwandeln
 ausdruckPrinten :: Ausdruck -> String
 
 Mithilfe der Funktion können Reguläre Ausdrücke in Strings zum Ausgeben umgewandelt werden.
@@ -157,7 +157,7 @@ Parameter:
 * Transition - Rückgabe der Transitionen mit angepassten Zustandsnummern
 
 
-## Automat erstellen
+## Funktion Automat erstellen
 Erstellt aus einem Regulären Ausdruck einen Automaten der genutzt werden kann
 um zu prüfen ob ein Wort teil des Regulären Ausdrucks ist.
 Das durchlaufen des Audrucks erfolgt rekursiv und mithilfe von Pattern matching.
@@ -165,51 +165,67 @@ Wichtig beim erstellen des automaten ist das es keine Kreisläufe von Spontanen 
 da sonst das ausführen des Automaten in einer endlos Schleife hängen bleibt.
 
 ### Umwandlungsregeln
-Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze.
+Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze. Die in den folgenden erklärungen verwendeten Zustandsnummern sind Beispielhaft für den Fall das die Teilausdrücke nur aus einer Transition bestehen - liegt mehr als nur eine Transition darunter müssen diese entsprechend angepasst werden.
 
 
 
-
+### C
 
 C - Aus `C 'A'` wird `Transition 1 'A' 2`
 
 <img src="C_einfügen.png" width="500">
 
-Konkatenation - Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekursiv für die Beiden Teilausdrücke der Konkatenation wider automat erstellen aufgerufen und anschliesend in den ergebnissen der rekursiven teilaufrufe die Zustandsnummern angepasst. Beispiel `Konkatenation teilausdruck1 teilausdruck2`  Teilausdruck 1 und 2 werden hier als `C 'A'`angenommen. D.h. der rekursive aufruf erstellet zunäsht Transitionen für die beiden Teilausdrücke, hier `Transition 1 'A' 2` anschliesend werden diese zurück gegeben und beim zusammenfügen der konkatenation werden die Transitionen aus Teilausdruck 1 übernommen und die Transition aus Teilausdruck 2 werden um Höchste Zustandsnummer aus Teilausdruck 1 minus eins erhöht. Hier also 2 - 1 = 1 , das ergibt dann für den Teilausdruck 2 die `Transition 2 'A' 3`. Sind die Teilausdrücke komplexer müssen eben von entsprechend mehr daruter liegenden Transitionen die Zustandsnummern angepasst werden.
+*Automat C* 
+
+### Konkatenation
+
+Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekursiv für die Beiden Teilausdrücke der Konkatenation wider automat erstellen aufgerufen und anschliesend in den ergebnissen der rekursiven teilaufrufe die Zustandsnummern angepasst. Beispiel `Konkatenation teilausdruck1 teilausdruck2`  Teilausdruck 1 und 2 werden hier als `C 'A'`angenommen. D.h. der rekursive aufruf erstellet zunäsht Transitionen für die beiden Teilausdrücke, hier `Transition 1 'A' 2` anschliesend werden diese zurück gegeben und beim zusammenfügen der konkatenation werden die Transitionen aus Teilausdruck 1 übernommen und die Transition aus Teilausdruck 2 werden um Höchste Zustandsnummer aus Teilausdruck 1 minus eins erhöht. Hier also 2 - 1 = 1 , das ergibt dann für den Teilausdruck 2 die `Transition 2 'A' 3`. Sind die Teilausdrücke komplexer müssen von entsprechend mehr daruter liegenden Transitionen die Zustandsnummern angepasst werden.
 
 <img src="Konkatenation.png" width="500">
 
-Sternbildung - Bei der Sternbildung müssen einige zusätzliche Übergange eingefügt werden um zu vermeiden das es eine Schleife mit nur Epsilon übergängen entstehen. Zudem müssen die zustandsnummern innerhalb ds Teilausdrucks sowie die der beiden übergänge nach dem Teilausdruck angepasst werden abhängig davon wie hoch die Zustandsnummern innerhalb des Teilausdrucks sind.
+*Automat Konkatenation* 
+
+### Sternbildung
+
+Bei der Sternbildung müssen einige zusätzliche Übergange eingefügt werden um zu vermeiden das es eine Schleife mit nur Epsilon übergängen entstehen kann. In der Nachfolgenden Grafik ist dies dargestellt. Die `Transition 1 '-' 4` wird für den fall das der Teilausdruck 0 mal ausgeführt wird. Die `Transition 3 '-' 2` ist für mögliche Widerholungen des Teilausdrucks. Die `Transition 1 '-' 2` und `Tranisiton 3 '-' 4` sind da um zu garantieren das es unter keinen Umständen ein Kreislauf aus Epsilon übergängen entstehen kann - unabhängig davon was für ein Regulärer Ausdruck im Teilausdruck steht und auch im Fall das die Sternbildung selbst ein Teilausdruck innerhalb eines Regulären Ausdrucks ist. Zudem müssen die Zustandsnummern innerhalb des Teilausdrucks sowie die der beiden übergänge nach dem Teilausdruck angepasst werden.
 
 <img src="Sternbildung.png" width="500">
 
-Alternative
+*Automat Sternbildung*
+
+### Alternative
+
+Bei der Alternative müssen ebenfalls Zusätzliche Transitionen eingefügt werden. Hier in der Grafik die `Transition 1 '-' 3` und die `Transition 2 '-' 4`. Prinzipiel wird der erste Teilausdruck unverändert beibehalten. Die Zustandsnummern des Zweiten Teilausdrucks werden erhöht sodass erster Zustand = letzer Zustand des ersten Teilausdruck + 1 gilt. Die Beiden eingefügten Transitionen verbinden die Getrennten Teilausdrücke mit dem Gemeinsamen Start und Endzustand. Durch diese Anpassung werden die Teilausdrücke getrennt.
 
 <img src="Alternative.png" width="500">
 
+*Automat Alternative*
 
 
-## Automat ausführen
+
+## Funktion Automat ausführen
+
+ausführen :: Automat -> Int -> String -> Bool
+
 Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten bzw des regulären ausdrucks
 aus dem der Automat erstellt wurde. Wenn das Wort teil des Automaten war wird true zurück gegeben
-falls nicht false
-ausführen :: Automat -> Int -> String -> Bool
+falls nicht false.
+
 Parameter:
-Automat - Automat der ausgeführt werden soll
-Int - Startzustand in dem der Automat gestartet werden soll
-String - Wort das geprüft werden soll
-Bool - Rückgabe ob wort teil des Automaten war oder nicht
-Beim ersten Aufruf des Automaten sollte immer 1 für den Startzustand angegeben werden
+* Automat - Automat der ausgeführt werden soll
+* Int - Startzustand in dem der Automat gestartet werden soll
+* String - Wort das geprüft werden soll
+* Bool - Rückgabe ob wort teil des Automaten war oder nicht
 
-Das Automat ausführen funktioniert rekursiv und mit pattern matching
+Beim ersten Aufruf des Automaten muss immer 1 für den Startzustand angegeben werden.
+
+Das Automat ausführen funktioniert rekursiv und mit pattern matching.
 Bei jedem rekusriven aufruf wird für jeden in diesem Zustand und mit dem aktuelle zeichen
-gültige transition ein neuer rekursiver aufruf gemacht - erreicht ein pfad den endzustand und hat kein ezichen übrig so returnt
-dieser true und beim rücklaufen der rekursion wird dieses true weitergegeben bis zum ursprünglichen aufruf
+gültige transition ein neuer rekursiver aufruf gemacht - erreicht ein pfad den endzustand und hat kein Zeichen übrig so gibt dieser true zurück dieses wird beim Rücklauf der Transition durchgereicht. Aufgrund der Umwandlungsregeln beim erstellen des Automaten kann es nicht zu endlosschleifen kommen.
 
-kann evtl bei der filter funktion in automat ausführen auch gleich geprüft werden ob das zeichen passt
-
-aufrufbaum für ein beispiel erstellen
-
+## Beispiel Automat erstellen und Ausführen
 
 
 ## Vergleich zu c++ umsetzung
+
+Größter Unterschied zwischen einer C++ und einer Umsetzung in Haskell ist das in C++ die Regulären Ausdrücke mit Objekten dargestellt werden und in Haskell mit Algebraischen Datentypen.
