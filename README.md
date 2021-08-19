@@ -45,7 +45,9 @@ Ausdruck A B C
 Da in unserem Algebraischen Datentyp Konkatenationen immer zweistellig sind muss für die Konkatenation von 3 Zeichen zwei mal Konkateniert werden.
 
 ## Funktion Vereinfachung von Regulären Ausdrücken
+```
 vereinfachung :: Ausdruck -> Ausdruck
+```
 
 Die Funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
 Ausdruck zurück. 
@@ -84,7 +86,9 @@ In der GHCI
     Sternbildung (C 'A')
 
 ## Funktion Reguläre Ausdrücke in Strings Umwandeln
+```
 ausdruckPrinten :: Ausdruck -> String
+```
 
 Mithilfe der Funktion können Reguläre Ausdrücke in Strings zum Ausgeben umgewandelt werden.
 Dabei wird wie bei der vorherigen Funktion das Durchschreitten rekursiv durchgeführt und das Vereinfachen mithilfe von Pattern Matching.
@@ -96,7 +100,9 @@ In der GHCI
 
 
 ## Datentyp Transition
+```
 data Transition = Transition Int Char Int deriving (Show)
+```
 
 Der Datentyp wird zum Erstellen von Transitionen zur Ausführung in Automaten verwendet.
 Dabei steht der erste Int für den Ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll. Für einen spontanen Übergang wird "-" eingesetzt. Der Zweite INT steht für den Zielzustand der nach ausführen
@@ -112,7 +118,9 @@ in der GHCI
     Transition 1 'A' 2
 
 ## Datenstruktur Automat
+```
 data Automat = Automat [Transition] Int deriving (Show)
+```
 
 Die Datenstruktur wird zum erstellen von Automaten benutzt.
 Ein Automat enthält eine Liste von Transitionen und einen Int für den Endzustand 
