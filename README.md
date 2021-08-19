@@ -246,23 +246,31 @@ Beispielwörter aus diesem Ausdruck - bei diesen Wörtern sollte der Automat Tru
 Zunächst erstellen wir den Regulären Ausdruck und Anschliesend den Automaten dazu.
 
 
-    let ausdruck = Konkatenation (Sternbildung (Konkatenation (C 'A') (C 'B))) (Sternbildung (Konkatenation (C 'B') (C 'A')))
-
-    let automat = automatErstellen ausdruck
-
-    ausführen automat 1 "ABBA"
-    ausführen automat 1 "ABABAB"
-    ausführen automat 1 "BABABA"
-    ausführen automat 1 "ABABBA"
-    ausführen automat 1 "AB"
-    ausführen automat 1 "BA"
+    ghci> let ausdruck = Konkatenation (Sternbildung (Konkatenation (C 'A') (C 'B'))) (Sternbildung (Konkatenation (C 'B') (C 'A')))
+    ghci> let automat = automatErstellen ausdruck
+    ghci> ausführen automat 1 "ABBA"
+    True
+    ghci> ausführen automat 1 "ABABAB"
+    True
+    ghci> ausführen automat 1 "BABABA"
+    True
+    ghci> ausführen automat 1 "ABABBA"
+    True
+    ghci> ausführen automat 1 "AB"
+    True
+    ghci> ausführen automat 1 "BA"
+    True
 
 Beispielwörter die nicht teil des Ausdrucks sind - bei diesen Wörtern sollte der Automat False zurückgeben.
 
-    ausführen automat 1 "BAAB"
-    ausführen automat 1 "AA"
-    ausführen automat 1 "BB"
-    ausführen automat 1 "XYZ"
+    ghci> ausführen automat 1 "BAAB"
+    False
+    ghci> ausführen automat 1 "AA"
+    False
+    ghci> ausführen automat 1 "BB"
+    False
+    ghci> ausführen automat 1 "XYZ"
+    False
 
 
 ## Vergleich zur C++ Umsetzung
