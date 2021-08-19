@@ -139,7 +139,7 @@ Parameter:
 * Automat - Automat dessen Zustandsnummern erhöht werden sollen
 * Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
 * Automat - Rückgabe des Automaten
-
+ 
     trippleListeErhöhen :: [Transition] -> Int -> [Transition]
 
 Erhöht alle zustandsnummern in einer Liste von Tripplen
@@ -148,7 +148,7 @@ Parameter:
 * [Transition] - Liste von Transitionen der Zustandsnummern erhöht werden sollen
 * Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
 * [Transition] - Rückgabe der Liste von Transitionen mti angepassten Zustandsnummern
-
+ 
 
     zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
 
