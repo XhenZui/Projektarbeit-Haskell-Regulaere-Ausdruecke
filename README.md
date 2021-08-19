@@ -237,7 +237,7 @@ Beispielwörter aus diesem Ausdruck - bei diesen Wörtern sollte der Automat Tru
 * AB
 * BA
 
-test
+Zunächst erstellen wir den Regulären Ausdruck und Anschliesend den Automaten dazu.
 
 
     let ausdruck = Konkatenation (Sternbildung (Konkatenation (C 'A') (C 'B))) (Sternbildung (Konkatenation (C 'B') (C 'A')))
