@@ -210,9 +210,9 @@ Bei der Alternative müssen ebenfalls Zusätzliche Transitionen eingefügt werde
 
 
 ## Funktion Automat ausführen
-
+```
 ausführen :: Automat -> Int -> String -> Bool
-
+```
 Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten bzw des Regulären Ausdrucks
 aus dem der Automat erstellt wurde. Wenn das Wort teil des Automaten war wird true zurück gegeben
 falls nicht false.
