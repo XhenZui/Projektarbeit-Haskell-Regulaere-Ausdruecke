@@ -50,7 +50,7 @@ vereinfachung :: Ausdruck -> Ausdruck
 Die Funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
 Ausdruck zurück. 
 
-    linkeSeite ==> rechteSeite
+
 
     eps r ==> r
 
@@ -119,7 +119,7 @@ Ein Automat enthält eine Liste von Transitionen und einen Int für den Endzusta
 des Automaten. Der Startzustand ist immer die 1 daher muss er nicht angegeben werden.
 Alle Automaten haben nur einen Start und Endzustand.
 
-Beispiel Automat [Transition 1 'A' 2] 2
+Beispiel `Automat [Transition 1 'A' 2] 2`
 in der GHCI
 
     ghci> let automat = Automat [Transition 1 'A' 2] 2
@@ -130,7 +130,7 @@ in der GHCI
 
 Eine Reihe von Hilfsfunktionen die beim Erstellen von Automaten verwendet werden.
 
-zustandsnummernErhöhen :: Automat -> Int -> Automat
+    zustandsnummernErhöhen :: Automat -> Int -> Automat
 
 
 Erhöht alle zustandsnummern im Automat um Int und gibt Automat zurück.
@@ -140,7 +140,7 @@ Parameter:
 * Int - Zahl um wieviel die Zustandsnummern erhöht werden sollen
 * Automat - Rückgabe des Automaten
 
-trippleListeErhöhen :: [Transition] -> Int -> [Transition]
+    trippleListeErhöhen :: [Transition] -> Int -> [Transition]
 
 Erhöht alle zustandsnummern in einer Liste von Tripplen
 
@@ -150,7 +150,7 @@ Parameter:
 * [Transition] - Rückgabe der Liste von Transitionen mti angepassten Zustandsnummern
 
 
-zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
+    zustandsnummerInTrippleErhöhen :: Transition -> Int -> Transition
 
 Erhöht alle Zustandsnummern in einem Tripple.
 
