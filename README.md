@@ -32,11 +32,11 @@ Variablen angeben also z.b. `let Teil1 = C 'A'`, `let Teil2 = C 'B'` und dann in
 ### Code Beispiele zum Erstellen von Ausdrücken
 Der code zum Erstellen des Ausdrucks (A B)* 
 
-   Sternbildung(Konkatenation (C "A") (C "B"))
+    Sternbildung(Konkatenation (C "A") (C "B"))
 
 Ausdruck A A*
 
-   Konkatenation ((C "A") (Sternbildung (C"A"))
+    Konkatenation ((C "A") (Sternbildung (C"A"))
 
 Ausdruck A B C
 
