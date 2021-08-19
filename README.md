@@ -8,29 +8,29 @@ Die Einarbeitung in Haskell wurde mit dem Beginner's Guide "Lean you a Haskell" 
 
 ## Haskell Erweiterung & Ausführung des Codes in VS Code
 
-Der Code wurde in Visual Studio Code mit GHC (Glasgow Haskell Compiler) erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
+Der Code wurde in Visual Studio Code mit GHC (Glasgow Haskell Compiler) Erweiterung entwickelt, diese ist im Marketplace für Visual Studio zu finden https://marketplace.visualstudio.com/items?itemName=haskell.haskell.
 Die Haskell Erweiterung wird zum kompilieren und ausführen des Codes verwendet. Für verbessertes Code Highlighting wurde noch eine Haskell Syntax Highlighting Erweiterung verwendet https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell .
 
-Zur verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann mit `ghci` die GHC interactive console gestartet werden. Als nächstes muss der Code mit `:l Regs.hs` kompiliert werden.
-Nun kann man in der Konsole beliebig Funktionen aufrufen.
+Zur Verwendung von GHC muss zuerst in das Projekt Verzeichnis Navigiert werden. Anschliesend kann in der Powershell mit `ghci` die GHC interactive console gestartet werden. Als nächstes muss der Code mit `:l Regs.hs` kompiliert werden.
+Nun kann man in der Konsole beliebige Funktionen aufrufen.
 
 
-## Datenstruktur regulärer ausdruck
-Basis für alle Regulären Ausdrücke in diesem Projekt ist die Algebraische datenstruktur "Ausdruck".
+## Datentyp Regulärer Ausdruck
+Basis für alle Regulären Ausdrücke in diesem Projekt ist der Algebraische Datentyp "Ausdruck".
 
     data Ausdruck = Epsilon | Phi | C Char | Alternative Ausdruck Ausdruck | Konkatenation Ausdruck Ausdruck| Sternbildung Ausdruck deriving (Show)
 
-Mithilfe dieser Datenstruktur Lassen sich beliebige gültige Reguläre Ausdrucke erstellen.
+Mithilfe dieses Datentyps lassen sich beliebige gültige Reguläre Ausdrücke erstellen.
 Besonders zu beachten ist hierbei die rekursive Struktur des Datentyps möchte man zb.
-eine Konkatenation von "A" und "B" darstellen dann besteht dieser aus 3 teil Ausdrücken
-aus `C "A"` ,  `C "B"` und `Konkatenation Ausdruck Ausdruck` - dabei fügt man die Teilausdrücke für die Zeichen
-in den Ausdruck der konkatenation also hier `Konkatenation (C "A") (C "B")`.
-Die klammern müssen gesetzt werden da das erstellen einer konkatenation zwei parameter erwartet und ohne die klammern C und "A" jeweils als ein Parameter interpretiert werden würden.
-Alternativ könnte man auch die Teil ausdrücke `C "A"` und `C "B"` in zwei Variablen speichern und stattdessen die 
-Variablen angeben also z.b. `let Teil1 = C "A"`, `let Teil2 = C "B"` und dann in die Konkatentation einfügen `Konkatenation Teil1 Teil2`.
+eine Konkatenation von "A" und "B" darstellen dann besteht diese aus 3 teil Ausdrücken.
+Aus `C 'A'` ,  `C 'B'` und `Konkatenation Ausdruck Ausdruck` - dabei fügt man die Teilausdrücke für die Zeichen
+in den Ausdruck der konkatenation also hier `Konkatenation (C 'A') (C 'B')`.
+Die klammern müssen gesetzt werden da das Erstellen einer Konkatenation zwei Parameter erwartet und ohne die klammern C und "A" jeweils als ein Parameter interpretiert werden.
+Alternativ könnte man auch die Teil ausdrücke `C 'A'` und `C 'B'` in zwei Variablen speichern und stattdessen die 
+Variablen angeben also z.b. `let Teil1 = C 'A'`, `let Teil2 = C 'B'` und dann in die Konkatentation einfügen `Konkatenation Teil1 Teil2`.
 
 ### Code Beispiele zum Erstellen von Ausdrücken
-Der code zum erstellen des Ausdrucks (A B)* 
+Der code zum Erstellen des Ausdrucks (A B)* 
    Sternbildung(Konkatenation (C "A") (C "B"))
 
 Ausdruck A A*
@@ -39,12 +39,12 @@ Ausdruck A A*
 Ausdruck A B C
     Konkatenation(Konkatenation((C"A")(C"B")) (C"C"))
 
-Da in unserer Algebraischen Datenstruktur konkatenationen immer zweistellig sind muss für die Konkatenation von 3 zeichen zwei mal Konkateniert werden.
+Da in unserem Algebraischen Datentyp Konkatenationen immer zweistellig sind muss für die Konkatenation von 3 Zeichen zwei mal Konkateniert werden.
 
 ## Funktion Vereinfachung von Regulären Ausdrücken
 vereinfachung :: Ausdruck -> Ausdruck
 
-Die funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
+Die Funktion nimmt einen Regulären Ausdruck und gibt einen anhand einer Menge von Regeln vereinfachten
 Ausdruck zurück. 
 
     linkeSeite ==> rechteSeite
@@ -65,12 +65,12 @@ Ausdruck zurück.
 Vereinfachunsregeln aus der Aufgabenstellung.
 Hinweis "+" steht für Alternative und Leerzeichen für Konkatenation
 
-Das Durchschreiten des Ausdrucks erfolgt Rekursiv. Das erkennen welche vereinfachungsregel
-angewendet werden soll wird mit Pattern matching erreicht dabei prüft die funktion nacheinander von oben nach
-unten in der methode welches pattern übergeben wurde und wendet dann die funktion die hinter dem gleichzeichen steht an, wichtig dabei zu beachten ist das immer nur der Hierarchisch höchstegelegene teil des ausdrucks bei einem durchlauf betrachtet wird. 
+Das Durchschreiten des Ausdrucks erfolgt Rekursiv. Das Erkennen welche Vereinfachungsregel
+angewendet werden soll wird mit Pattern matching erreicht. Dabei prüft die Funktion nacheinander von oben nach
+unten in der Funktion welches Pattern übergeben wurde und wendet dann die Funktion die hinter dem Gleichzeichen steht an, wichtig dabei zu beachten ist das immer nur der Hierarchisch höchstegelegene Teil des Ausdrucks bei einem Durchlauf betrachtet wird. 
 
 ### Beispiel mit Code
-Gibt man zum beispiel den Ausdruck `Sternbildung (Alternative (C 'A') (C 'A'))` an dann wird im ersten Durchlauf erkannt das es sich um eine Sternbildung mit einem Beliebigen Parameter handelt - da hier keine der Regeln anwendung findet wird Vereinfachung für den hierarchisch daruterliegenden Ausdruck `Alternative (C 'A') (C 'A')` aufgerufen hier wird erkannt das es sich um eine Alternative von zwei gleichen Zeichen handelt daher wird nur `C 'A'` zurückgegeben.
+Gibt man zum beispiel den Ausdruck `Sternbildung (Alternative (C 'A') (C 'A'))` an dann wird im ersten Durchlauf erkannt das es sich um eine Sternbildung mit einem Beliebigen Parameter handelt - da hier keine der Regeln anwendung findet wird Vereinfachung für den hierarchisch daruterliegenden Ausdruck `Alternative (C 'A') (C 'A')` aufgerufen. Hier wird erkannt das es sich um eine Alternative von zwei gleichen Zeichen handelt daher wird die vereinfachungsregel  `r + r ==> r`angewendet und`C 'A'` zurückgegeben.
 Das Ergebnis ist dann `Sternbildung (C 'A')`.
 
 In der GHCI
@@ -84,7 +84,7 @@ In der GHCI
 ausdruckPrinten :: Ausdruck -> String
 
 Mithilfe der Funktion können Reguläre Ausdrücke in Strings zum Ausgeben umgewandelt werden.
-Dabei wird wie bei der vorheringen Funktion das durchschreitten rekursiv durchgeführt und das vereinfachen mithilfe von Pattern Matching
+Dabei wird wie bei der vorherigen Funktion das Durchschreitten rekursiv durchgeführt und das Vereinfachen mithilfe von Pattern Matching.
 
 In der GHCI
 
@@ -92,11 +92,11 @@ In der GHCI
     "(A B)*"
 
 
-## Datenstruktur transitionen
+## Datentyp Transition
 data Transition = Transition Int Char Int deriving (Show)
 
-Die Datenstruktur wird zum erstellen von Transitionen zur Ausführung in Automaten verwendet.
-Dabei steht der erste Int für den Ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll. Für einen spontanen Übergang wird "-" eingesetzt. Der zweite int steht für den Zielzustand der nach ausführen
+Der Datentyp wird zum Erstellen von Transitionen zur Ausführung in Automaten verwendet.
+Dabei steht der erste Int für den Ausgangszustand der Char für das Zeichen das bei der Transition eingesetzt werden soll. Für einen spontanen Übergang wird "-" eingesetzt. Der Zweite INT steht für den Zielzustand der nach ausführen
 der Transition erreicht wird.
 
 Beispiel Transition 1 'A' 2
@@ -125,7 +125,7 @@ in der GHCI
 
 ## Hilfsfunktionen
 
-Eine Reihe von Hilfsfunktionen die Beim erstellen von Automaten verwendet werden.
+Eine Reihe von Hilfsfunktionen die beim Erstellen von Automaten verwendet werden.
 
 zustandsnummernErhöhen :: Automat -> Int -> Automat
 
@@ -161,11 +161,11 @@ Parameter:
 Erstellt aus einem Regulären Ausdruck einen Automaten der genutzt werden kann
 um zu prüfen ob ein Wort teil des Regulären Ausdrucks ist.
 Das durchlaufen des Audrucks erfolgt rekursiv und mithilfe von Pattern matching.
-Wichtig beim erstellen des automaten ist das es keine Kreisläufe von Spontanen übergängen geben darf
+Wichtig beim Erstellen des Automaten ist das es keine Kreisläufe von Spontanen übergängen geben darf
 da sonst das ausführen des Automaten in einer endlos Schleife hängen bleibt.
 
 ### Umwandlungsregeln
-Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau der Algebraischen Datenstruktur zu nutze. Die in den folgenden erklärungen verwendeten Zustandsnummern sind Beispielhaft für den Fall das die Teilausdrücke nur aus einer Transition bestehen - liegt mehr als nur eine Transition darunter müssen diese entsprechend angepasst werden.
+Der Reguläre Ausdruck wird mithilfe von einingen Umwandlungsregeln in eine menge von Transitionen umgewandelt. Dabei macht man sich den Rekursiven Aufbau des Algebraischen Datentyps zu nutze. Die in den folgenden Erklärungen verwendeten Zustandsnummern sind Beispielhaft für den Fall das die Teilausdrücke nur aus einer Transition bestehen - liegt mehr als nur eine Transition darunter müssen diese entsprechend angepasst werden. Ein Nebeneffekt dieser Umwandlungsregeln ist das sehr viele Epsilon bzw. spontane Übergänge entstehen und dadurch der Automat schwer zu lesen wird.
 
 
 
@@ -179,7 +179,7 @@ C - Aus `C 'A'` wird `Transition 1 'A' 2`
 
 ### Konkatenation
 
-Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekursiv für die Beiden Teilausdrücke der Konkatenation wider automat erstellen aufgerufen und anschliesend in den ergebnissen der rekursiven teilaufrufe die Zustandsnummern angepasst. Beispiel `Konkatenation teilausdruck1 teilausdruck2`  Teilausdruck 1 und 2 werden hier als `C 'A'`angenommen. D.h. der rekursive aufruf erstellet zunäsht Transitionen für die beiden Teilausdrücke, hier `Transition 1 'A' 2` anschliesend werden diese zurück gegeben und beim zusammenfügen der konkatenation werden die Transitionen aus Teilausdruck 1 übernommen und die Transition aus Teilausdruck 2 werden um Höchste Zustandsnummer aus Teilausdruck 1 minus eins erhöht. Hier also 2 - 1 = 1 , das ergibt dann für den Teilausdruck 2 die `Transition 2 'A' 3`. Sind die Teilausdrücke komplexer müssen von entsprechend mehr daruter liegenden Transitionen die Zustandsnummern angepasst werden.
+Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekursiv für die Beiden Teilausdrücke der Konkatenation wider Automat erstellen aufgerufen und anschliesend in den Ergebnissen der rekursiven Teilaufrufe die Zustandsnummern angepasst. Beispiel `Konkatenation teilausdruck1 teilausdruck2`  Teilausdruck 1 und 2 werden hier als `C 'A'`angenommen. D.h. der rekursive Aufruf erstellt zunächst Transitionen für die beiden Teilausdrücke, hier `Transition 1 'A' 2` anschliesend werden diese zurück gegeben und beim Zusammenfügen der Konkatenation werden die Transitionen aus Teilausdruck 1 übernommen und die Transition aus Teilausdruck 2 werden um Höchste Zustandsnummer aus Teilausdruck 1 minus eins erhöht. Hier also 2 - 1 = 1 , das Ergibt dann für den Teilausdruck 2 die `Transition 2 'A' 3`. Sind die Teilausdrücke komplexer müssen von entsprechend mehr daruter liegenden Transitionen die Zustandsnummern angepasst werden.
 
 <img src="Konkatenation.png" width="500">
 
@@ -187,7 +187,7 @@ Die Umwandlung einer Konkatenation ist etwas schwieriger. Es wird jeweils rekurs
 
 ### Sternbildung
 
-Bei der Sternbildung müssen einige zusätzliche Übergange eingefügt werden um zu vermeiden das es eine Schleife mit nur Epsilon übergängen entstehen kann. In der Nachfolgenden Grafik ist dies dargestellt. Die `Transition 1 '-' 4` wird für den fall das der Teilausdruck 0 mal ausgeführt wird. Die `Transition 3 '-' 2` ist für mögliche Widerholungen des Teilausdrucks. Die `Transition 1 '-' 2` und `Tranisiton 3 '-' 4` sind da um zu garantieren das es unter keinen Umständen ein Kreislauf aus Epsilon übergängen entstehen kann - unabhängig davon was für ein Regulärer Ausdruck im Teilausdruck steht und auch im Fall das die Sternbildung selbst ein Teilausdruck innerhalb eines Regulären Ausdrucks ist. Zudem müssen die Zustandsnummern innerhalb des Teilausdrucks sowie die der beiden übergänge nach dem Teilausdruck angepasst werden.
+Bei der Sternbildung müssen einige zusätzliche Übergange eingefügt werden um zu vermeiden das es eine Schleife mit nur Epsilon bzw. Spontanen übergängen entstehen kann. In der Nachfolgenden Grafik ist dies dargestellt. Die `Transition 1 '-' 4` wird für den Fall das der Teilausdruck 0 mal ausgeführt wird. Die `Transition 3 '-' 2` ist für mögliche Widerholungen des Teilausdrucks. Die `Transition 1 '-' 2` und `Tranisiton 3 '-' 4` sind da um zu garantieren das es unter keinen Umständen ein Kreislauf aus Epsilon bzw Spontanen übergängen entstehen kann - unabhängig davon was für ein Regulärer Ausdruck im Teilausdruck steht und auch im Fall das die Sternbildung selbst ein Teilausdruck innerhalb eines Regulären Ausdrucks ist. Zudem müssen die Zustandsnummern innerhalb des Teilausdrucks sowie die der beiden Transitionen nach dem Teilausdruck angepasst werden.
 
 <img src="Sternbildung.png" width="500">
 
@@ -207,7 +207,7 @@ Bei der Alternative müssen ebenfalls Zusätzliche Transitionen eingefügt werde
 
 ausführen :: Automat -> Int -> String -> Bool
 
-Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten bzw des regulären ausdrucks
+Führt Automat auf ein Wort aus um zu sehen ob dieses teil des Automaten bzw des Regulären Ausdrucks
 aus dem der Automat erstellt wurde. Wenn das Wort teil des Automaten war wird true zurück gegeben
 falls nicht false.
 
@@ -220,12 +220,42 @@ Parameter:
 Beim ersten Aufruf des Automaten muss immer 1 für den Startzustand angegeben werden.
 
 Das Automat ausführen funktioniert rekursiv und mit pattern matching.
-Bei jedem rekusriven aufruf wird für jeden in diesem Zustand und mit dem aktuelle zeichen
-gültige transition ein neuer rekursiver aufruf gemacht - erreicht ein pfad den endzustand und hat kein Zeichen übrig so gibt dieser true zurück dieses wird beim Rücklauf der Transition durchgereicht. Aufgrund der Umwandlungsregeln beim erstellen des Automaten kann es nicht zu endlosschleifen kommen.
+Bei jedem rekusriven Aufruf wird für jede in diesem Zustand und mit dem aktuelle Zeichen
+gültige Transition ein neuer rekursiver aufruf gemacht - erreicht ein Pfad den Endzustand und hat kein Zeichen übrig so gibt dieser true zurück, dieses wird beim Rücklauf der Transition durchgereicht. Aufgrund der Umwandlungsregeln beim Erstellen des Automaten kann es nicht zu Endlosschleifen kommen - d.h. der Automat ist nicht Deterministisch aber Endlich.
 
 ## Beispiel Automat erstellen und Ausführen
 
+Ein Beispiel zur Demonstration der Funktionen Automat erstellen und Ausführen.
 
-## Vergleich zu c++ umsetzung
+Beispielausdruck `(A B)* (B A)*`
+Beispielwörter aus diesem Ausdruck - bei diesen Wörtern sollte der Automat True zurückgeben.
 
-Größter Unterschied zwischen einer C++ und einer Umsetzung in Haskell ist das in C++ die Regulären Ausdrücke mit Objekten dargestellt werden und in Haskell mit Algebraischen Datentypen.
+* ABBA
+* ABABAB
+* BABABA
+* ABABBA
+* AB
+* BA
+
+    let ausdruck = Konkatenation (Sternbildung (Konkatenation (C 'A') (C 'B))) (Sternbildung (Konkatenation (C 'B') (C 'A')))
+    let automat = automatErstellen ausdruck
+    ausführen automat 1 "ABBA"
+    ausführen automat 1 "ABABAB"
+    ausführen automat 1 "BABABA"
+    ausführen automat 1 "ABABBA"
+    ausführen automat 1 "AB"
+    ausführen automat 1 "BA"
+
+Beispielwörter die nicht teil des Ausdrucks sind - bei diesen Wörtern sollte der Automat False zurückgeben.
+
+    ausführen automat 1 "BAAB"
+    ausführen automat 1 "AA"
+    ausführen automat 1 "BB"
+    ausführen automat 1 "XYZ"
+
+
+## Vergleich zur C++ Umsetzung
+
+Größter Unterschied zwischen einer C++ und einer Umsetzung in Haskell ist das in C++ die Regulären Ausdrücke mit Objekten und Klassen dargestellt werden und in Haskell mit Algebraischen Datentypen. Ein weiterer großer Unterschied ist das in der C++ Umsetzung beim Vereinfachen und Erstellen des Automates die Unterschiedlichen Typen von Regulären Ausdrücken (zb. Konkatenation oder Sternbildung) mit einem Switch Case abgefragt werden und in Haskell mit Pattern Matching. Auf den ersten Blick fällt auch auf das der Haskell Code deutlich Kompakter ist - dies liegt zum großen  Teil daran das keine Klassen definiert werden müssen sondern nur Algebraische Datentypen welche innerhalb eines Einzeilers erstellt werden können.
+
+
